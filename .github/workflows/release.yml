@@ -1,0 +1,54 @@
+name: Build & Release Chrome Extension
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Package Chrome Extension
+        id: package
+        run: |
+          BASE_VERSION=$(jq -r '.version' manifest.json | cut -d. -f1,2)
+          VERSION="${BASE_VERSION}.${GITHUB_RUN_NUMBER}"
+          TAG="v${VERSION}"
+
+          mkdir -p dist/extension
+          cp manifest.json content.js popup.html popup.js LICENSE README.md dist/extension/
+          jq --arg v "$VERSION" '.version = $v' dist/extension/manifest.json > dist/extension/manifest.tmp.json
+          mv dist/extension/manifest.tmp.json dist/extension/manifest.json
+
+          cd dist/extension
+          zip -r ../gemini-model-picker-chrome.zip .
+          cp ../gemini-model-picker-chrome.zip "../gemini-model-picker-chrome-${TAG}.zip"
+
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+
+      - name: Upload Extension Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: gemini-model-picker-chrome
+          path: |
+            dist/gemini-model-picker-chrome.zip
+          if-no-files-found: error
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.package.outputs.tag }}
+          name: Release ${{ steps.package.outputs.tag }}
+          generate_release_notes: true
+          files: |
+            dist/gemini-model-picker-chrome.zip
+            dist/gemini-model-picker-chrome-${{ steps.package.outputs.tag }}.zip

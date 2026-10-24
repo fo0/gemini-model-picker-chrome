@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Gemini Enforcer</title>
+  <style>
+    :root {
+      color-scheme: dark;
+    }
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
+    }
+    body {
+      margin: 0;
+      padding: 16px;
+      width: 320px;
+      background: #131314;
+      color: #e3e3e3;
+      font-size: 13px;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #2d2e30;
+    }
+    .title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+    }
+    .toggle-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      color: #a8c7fa;
+      user-select: none;
+    }
+    .toggle-label input {
+      accent-color: #a8c7fa;
+      width: 15px;
+      height: 15px;
+      cursor: pointer;
+    }
+    .field {
+      margin-bottom: 14px;
+    }
+    label.field-label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 5px;
+      color: #c4c7c5;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #444746;
+      background: #1e1f20;
+      color: #fff;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    input[type="text"]:focus {
+      border-color: #a8c7fa;
+    }
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 6px;
+    }
+    .chip {
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #282a2c;
+      border: 1px solid #3c4043;
+      color: #c4c7c5;
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .chip:hover {
+      background: #333538;
+      color: #fff;
+      border-color: #a8c7fa;
+    }
+    .hint {
+      font-size: 11px;
+      color: #8e918f;
+      margin-top: 4px;
+    }
+    .status {
+      margin-top: 10px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: #1e2a22;
+      color: #81c995;
+      font-size: 12px;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .status.visible {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <span class="title">Gemini Auto-Auswahl</span>
+    <label class="toggle-label">
+      <input type="checkbox" id="enabled" checked>
+      <span>Aktiv</span>
+    </label>
+  </div>
+
+  <div class="field">
+    <label class="field-label" for="modelText">Modell (Freitext)</label>
+    <input type="text" id="modelText" placeholder="z.B. Argon, 3.1 Pro, Flash...">
+    <div class="chips" id="modelChips">
+      <button type="button" class="chip" data-value="Argon">4 Argon</button>
+      <button type="button" class="chip" data-value="3.1 Pro">3.1 Pro</button>
+      <button type="button" class="chip" data-value="3.8 Flash">3.8 Flash</button>
+      <button type="button" class="chip" data-value="Flash-Lite">3.5 Flash-Lite</button>
+    </div>
+    <div class="hint">Teilbegriff reicht (z.B. „Argon“ oder „Pro“).</div>
+  </div>
+
+  <div class="field">
+    <label class="field-label" for="effortText">Denkaufwand / Effort (Freitext)</label>
+    <input type="text" id="effortText" placeholder="z.B. Hoch, Mittel, Niedrig (oder leer)">
+    <div class="chips" id="effortChips">
+      <button type="button" class="chip" data-value="Hoch">Hoch</button>
+      <button type="button" class="chip" data-value="Mittel">Mittel</button>
+      <button type="button" class="chip" data-value="Niedrig">Niedrig</button>
+      <button type="button" class="chip" data-value="">Nicht ändern</button>
+    </div>
+    <div class="hint">Leer lassen, falls Denkaufwand egal ist.</div>
+  </div>
+
+  <div id="status" class="status">Gespeichert &amp; aktiv!</div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

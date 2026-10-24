@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "Gemini Model & Effort Enforcer",
+  "version": "1.0.0",
+  "description": "Automatically selects your preferred model (e.g. Argon) and thinking effort (e.g. High / Hoch) on gemini.google.com.",
+  "permissions": ["storage"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Gemini Model & Effort Settings"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://gemini.google.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 # Gemini Model & Effort Enforcer (Chrome Extension)
 
-Chrome Extension (Manifest V3) that automatically selects your preferred model (e.g. **4 Argon**, **3.1 Pro**, **3.8 Flash**, **3.5 Flash-Lite**) and thinking effort level (e.g. **Hoch / High**, **Mittel / Medium**, **Niedrig / Low**) on [gemini.google.com](https://gemini.google.com).
+Chrome Extension (Manifest V3) that automatically selects your preferred model (e.g. **4 Argon**, **3.1 Pro**, **3.8 Flash**, **3.5 Flash-Lite**) and thinking effort level (**High**, **Medium**, **Low**) on [gemini.google.com](https://gemini.google.com).
 
 ## Features
 
@@ -15,8 +15,8 @@ Chrome Extension (Manifest V3) that automatically selects your preferred model (
 1. Download the latest `gemini-model-picker-chrome.zip` from the [Releases](https://github.com/fo0/gemini-model-picker-chrome/releases) page (or from the GitHub Actions workflow artifacts).
 2. Extract the `.zip` archive into a folder on your computer.
 3. Open Chrome and navigate to `chrome://extensions/`.
-4. Enable **Developer mode** (*Entwicklermodus*) in the top-right corner.
-5. Click **Load unpacked** (*Entpackte Erweiterung laden*) and select the extracted folder.
+4. Enable **Developer mode** in the top-right corner.
+5. Click **Load unpacked** and select the extracted folder.
 
 ### From Source
 1. Clone this repository:

@@ -4,3 +4,8 @@ Thumbs.db
 node_modules/
 .vscode/
 .idea/
+
+# Chrome extension packaging output
+*.crx
+*.pem
+dist/

@@ -16,18 +16,21 @@ This repository contains a Chrome Extension (Manifest V3) that automatically sel
 
 1. **Mode Picker Button (`button[data-test-id="bard-mode-menu-button"]`):**
    - Located inside `<bard-mode-switcher>`.
-   - Displays the currently selected model in `.picker-primary-text` (e.g. `Argon`, `Flash-Lite`, `3.1 Pro`) and the thinking effort in `.picker-secondary-text` (e.g. `Hoch` / `High`, `Mittel` / `Medium`).
-   - **Important:** When thinking effort is set to `Niedrig` (`Low`), `.picker-secondary-text` is empty (`""`). To prevent infinite re-enforcement loops when `Niedrig` is selected (or when a model does not support thinking effort), `content.js` tracks `lastVerifiedSignature` after applying the setting.
+   - Displays the currently selected model in `.picker-primary-text` (or directly inside `[data-test-id="logo-pill-label-container"]` when no secondary thinking level is active) and the thinking effort in `.picker-secondary-text` (e.g. `Hoch` / `High`, `Mittel` / `Medium`).
+   - **Important:** When thinking effort is set to `Niedrig` (`Low`), or when the button label displays a task category (such as `Code und Analyse`) instead of the model code name (`4 Argon`), `content.js` tracks `lastVerifiedSignature` after verifying/applying the setting so it never enters an infinite open/close loop.
 
 2. **Menu & Submenu Architecture (`<gem-menu>` instead of `.cdk-overlay-container`):**
-   - Gemini no longer renders the mode switcher items inside the global `.cdk-overlay-container`.
-   - Instead, clicking `button[data-test-id="bard-mode-menu-button"]` sets `aria-expanded="true"` and mounts `<gem-menu data-test-id="gem-mode-menu" role="menu">` inside `<bard-mode-switcher>`.
+   - Clicking `button[data-test-id="bard-mode-menu-button"]` sets `aria-expanded="true"` and mounts `<gem-menu data-test-id="gem-mode-menu" role="menu">` inside `<bard-mode-switcher>` (within `.cdk-overlay-popover`).
    - While `aria-expanded="false"`, `<gem-menu>` is not in the DOM (`querySelectorAll('gem-menu-item').length === 0`).
-   - Once the main menu is opened (`aria-expanded="true"`), **both** the main model items (`gem-menu-item[data-mode-id]`) and the thinking effort submenu items (`<div popover="manual" class="cdk-overlay-popover">...<div class="submenu-container"><gem-menu>...`) are mounted in the DOM simultaneously.
-   - Each item is a `<gem-menu-item role="menuitem">` with its title inside `.label` and its active state indicated by the `.selected` class.
+   - Model items use `<gem-menu-item role="menuitemradio">` (or `role="menuitem"`), where:
+     - `.label` contains the task description (e.g. `Code und Analyse`, `Sehr komplexe Aufgaben`, `Vielseitige Unterstützung`, `Schnellinfo`).
+     - `.sublabel` contains the actual model name (e.g. `4 Argon`, `4 Carbon`, `3.6 Flash`, `3.5 Flash-Lite`).
+     - `data-mode-id` / `data-test-id` also carries identifiers such as `data-mode-id="argon"` and `data-test-id="bard-mode-option-argon"`.
+   - Therefore, model matching **must** inspect `.label`, `.sublabel`, `data-mode-id`, and `data-test-id` together rather than `.label` alone.
+   - Active state is indicated by `.selected`, `aria-checked="true"`, or a child check icon (`[fonticon="check"]`). Disabled/locked items have `aria-disabled="true"` or a lock icon (`[fonticon="lock"]`).
 
 3. **Stealth Menu Switching:**
-   - During automated clicks, `content.js` injects a temporary `<style id="argon-high-stealth">` targeting `bard-mode-switcher gem-menu, bard-mode-switcher .cdk-overlay-popover, .cdk-overlay-container` with `opacity: 0 !important; pointer-events: none !important;` so the user never sees the menu flash.
+   - During automated clicks, `content.js` injects a temporary `<style id="argon-high-stealth">` targeting `bard-mode-switcher gem-menu, bard-mode-switcher gem-popover, bard-mode-switcher .cdk-overlay-popover, .cdk-overlay-container` with `opacity: 0 !important; pointer-events: none !important;` so the user never sees the menu flash.
    - If the user opens the menu manually (`picker.getAttribute('aria-expanded') === 'true'`), `content.js` does not interfere.
 
 ## Security & Privacy Guidelines
